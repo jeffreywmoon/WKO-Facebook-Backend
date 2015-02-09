@@ -61,6 +61,9 @@ function query($sql){
 	return $result;	
 }
 
+/*
+ * Counts the number of rows in facebook table
+ */
 function countRows(){
 	$sql = "SELECT count(*) as 'count' FROM facebook";
 	$result = query($sql);
