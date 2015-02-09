@@ -25,26 +25,29 @@ function update(){
 	$prev_post = getNewestFromDb();
 
 	$added_posts=0;
-
-	echo $prev_post['idpost'];
+	
 	// check each of the posts we received, starting with the newest-created
 	foreach($posts['data'] as $post){
+		
 		//if given post has same id as newest in db, we know we can stop
 		//looking through posts
 		if($prev_post != NULL && $post['id'] == $prev_post['idpost']){
 			break;
+		
 		// break if we have added max # of posts
 		}elseif($added_posts == $NUMBER_OF_POSTS){	
 			break;
+		
 		// post is still a potential 'new post'
 		}else{
-			echo "checking post content...<br>";
+		
 			// filter out non-status updates (pictures, changing info, friend-accepts)
 			if(checkPost($post)){
+			
 				$time = str_replace("T", " ", substr($post['created_time'], 0, 19));
 
 				// sql statement for insert
-				$sql = "INSERT INTO facebook VALUES ('".$post['id']."','".$post['message'].
+				$sql = "INSERT INTO `facebook` VALUES ('".$post['id']."','".$post['message'].
 					"','".$time."');";
 
 				// execute insert
@@ -65,7 +68,7 @@ function getPosts(){
 	// access token is required to read a feed
 	// this was generated using getAccessToken(), and will remain
 	// the same until either the client_id or the app_secret changes
-	$access_token = "404036536424538|Y7z0ESUNF2tgog3P5ljFJ9ooW2U";
+	$access_token = ;
 
 	// http get url, we are requesting the edge /posts of node $user_id,
 	// we are requesting just the fields id, status_type, created_time, and link
@@ -121,8 +124,8 @@ function getAccessToken($client_id, $app_secret){
 	$base_url = "https://graph.facebook.com/";	
 	// the next 2 assignment statements are only in here for
 	// testing/demonstration purposes
-	$client_id = "404036536424538";
-	$app_secret = "ef89c41bbf28984534579abebf1ae876";
+	$client_id = "";
+	$app_secret = "";
 	
 	// http get request
 	$url = $base_url."oauth/access_token?client_id=".$client_id.
