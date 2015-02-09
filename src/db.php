@@ -31,7 +31,7 @@ function connect(){
 }
 
 /*
- * Executes a mysql INSERT with the given sql
+ * Executes a mysql INSERT or DELETE with the given sql
  */
 function insert($sql){
 	$conn = connect();
