@@ -130,6 +130,10 @@ function getAccessToken($client_id, $app_secret){
 	$base_url = "https://graph.facebook.com/";	
 	// the next 2 assignment statements are only in here for
 	// testing/demonstration purposes
+	// Note: when testing, I will put my client_id and app_secret here,
+	// if we decide to implement, we can generate their accesstoken and store
+	// in db or in a global.
+	
 	$client_id = "";
 	$app_secret = "";
 	
