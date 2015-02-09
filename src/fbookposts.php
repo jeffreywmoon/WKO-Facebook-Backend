@@ -26,7 +26,7 @@ function update(){
 
 	$added_posts=0;
 	
-	// check each of the posts we received, starting with the newest-created
+	// check each of the posts we received from fb, starting with the newest-created
 	foreach($posts['data'] as $post){
 		
 		//if given post has same id as newest in db, we know we can stop
@@ -43,7 +43,7 @@ function update(){
 		
 			// filter out non-status updates (pictures, changing info, friend-accepts)
 			if(checkPost($post)){
-			
+				// format the time for mysql DATETIME datatype
 				$time = str_replace("T", " ", substr($post['created_time'], 0, 19));
 
 				// sql statement for insert
@@ -56,6 +56,7 @@ function update(){
 			}
 		}	
 	}
+	// after we're done adding posts to database, we must clear the old ones out
 	clearOldPosts();
 }
 
@@ -66,8 +67,9 @@ function getPosts(){
 	global $PAGE_ID;
 
 	// access token is required to read a feed
-	// this was generated using getAccessToken(), and will remain
-	// the same until either the client_id or the app_secret changes
+	// email or text me to get my access code, I removed it when I published the source
+	// the access token is generated using getAccessToken(), and will remain
+	// valid until either the client_id or the app_secret changes
 	$access_token = ;
 
 	// http get url, we are requesting the edge /posts of node $user_id,
@@ -75,7 +77,9 @@ function getPosts(){
 	$url = "https://graph.facebook.com/".$PAGE_ID."/posts?fields=id,status_type".
 		",message,created_time,link&access_token=".$access_token;
 
+	// execute http get
 	$reply = file_get_contents($url);
+	// parse the json
 	return json_decode($reply, true);
 }
 
@@ -88,6 +92,7 @@ function checkPost($post){
 	// first, check status_type (what type of post)
 	if($post['status_type'] != "mobile_status_update" && $post['status_type'] != "wall_post")
 		return false;
+	// if the post isn't at least the minimum desired post length
 	elseif(strlen($post['message']) < $MIN_POST_LENGTH)
 		return false;
 	else
@@ -107,6 +112,7 @@ function clearOldPosts(){
 		$sql = "DELETE FROM `facebook` WHERE idpost NOT IN ( SELECT idpost FROM ".
 			"(SELECT idpost FROM `facebook` ORDER BY date DESC LIMIT ".$NUMBER_OF_POSTS.") t);";
 		
+		// execute DELETE FROM
 		insert($sql);
 	}
 }	
@@ -141,6 +147,7 @@ function getAccessToken($client_id, $app_secret){
  * gets a resultset of the most recent posts from db
  */
 function getNewestFromDb(){
+	// return a resultset containing only the newest post
 	$sql = "SELECT idpost FROM facebook ORDER BY date DESC LIMIT 1";
 	return query($sql)->fetch_assoc();
 }
